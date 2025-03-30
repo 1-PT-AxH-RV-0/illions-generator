@@ -124,7 +124,7 @@
 
 接着，把第二类组记为 c2g、第二类组索引记为 i<sub>c2g</sub>、其值计为 v<sub>c2g</sub>.
 
-然后，每个 c2g 都会构建一个第二类分隔符［**注意是分隔符（Separator）而不是分界线（Separatrix）**］，其是通过在第 v<sub>c2g</sub> 个前缀模式的第一层级分界线之后拼接上第 i<sub>c2g</sub> 个第二层级分界线构成的（如果 i<sub>c2g</sub> 为 0，且 v<sub>c2g</sub> 不在 1~3 中，则直接就是第 v<sub>c2g</sub> 个第一层级分界线，在 1~3 中则分别是 `unt`、`duot` 和 `tret`）。
+然后，每个 c2g 都会构建一个第二类分隔符［**注意是分隔符（Separator）而不是分界线（Separatrix）**］，其是通过在第 v<sub>c2g</sub> 个前缀模式的第一层级分界线之后拼接上第 i<sub>c2g</sub> 个第二层级分界线构成的（如果 i<sub>c2g</sub> 为 0，且 v<sub>c2g</sub> 不在 1\~3 中，则直接就是第 v<sub>c2g</sub> 个第一层级分界线，在 1\~3 中则分别是 `unt`、`duot` 和 `tret`）。
 
 再然后，把所有的第二类分隔符按其 i<sub>c2g</sub> 的大小降序排序，之后使用“-”拼接在一起，以构造成「第一类分隔符」。
 
