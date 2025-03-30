@@ -7,7 +7,7 @@ TIER1_ROOTS = {
 TIER2_ROOTS = {
     'ones': list(map(lambda s: s.split('/'), ['milli/me', 'micro/due', 'nano/tre/trio', 'pico/tetre', 'femto/pente', 'atto/hexe', 'zepto/hepte', 'yocto/octe', 'xono/enne'])),
     'tens': [['vec', 'c'], 'icos', 'triacont', 'tetracont', 'pentacont', 'hexacont', 'heptacont', 'octacont', 'ennacont'],
-    'hundreds': ['hect', 'dohect', 'triahect', 'tetrahect', 'pentahect', 'hexahect', 'heptahect', 'octahect', 'ennahect']
+    'hundreds': ['hecto', 'dohecto', 'triahecto', 'tetrahecto', 'pentahecto', 'hexahecto', 'heptahecto', 'octahecto', 'ennahecto']
 }
 TIER2_SPECIAL_ONES_ROOTS = ['unt', 'duot', 'tret']
 TIER2_SPECIAL_ONES_ABBR = ['Ut', 'Dt', 'Trt']
@@ -36,9 +36,9 @@ TIER3_ABBR = {
     'hundreds': list(map(lambda s: s.split('/'), ['Ha/Ho', 'Ba/Bo', 'Tra/Tro', 'Toa/To', 'Poa/Po', 'Eta/Exo', 'Zta/Zo', 'Yta/Yo', 'Nta/No']))
 }
 
-def gen_class1_separator(n, prefix=False, *, abbr=False):
+def gen_tier1_separatrix(n, prefix=False, *, abbr=False):
     if n >= 1000 or n <= 0:
-        raise ValueError('第一类分隔符的索引必须在 1~999 中。')
+        raise ValueError('第一层级分界线的索引必须在 1~999 中。')
     ones = n % 10
     tens = (n // 10) % 10
     hundreds = (n // 100) % 10
@@ -46,115 +46,115 @@ def gen_class1_separator(n, prefix=False, *, abbr=False):
     if abbr:
         if tens == hundreds == 0:
             if ones == 1 and prefix:
-                separator = ''
+                separatrix = ''
             else:
-                separator = TIER1_ABBR['ones'][ones - 1][-1 if prefix else 0]
+                separatrix = TIER1_ABBR['ones'][ones - 1][-1 if prefix else 0]
         else:
             ones_root = '' if ones == 0 else TIER1_ABBR['ones'][ones - 1][-1]
             tens_root = '' if tens == 0 else TIER1_ABBR['tens'][tens - 1]
             hundreds_root = '' if hundreds == 0 else TIER1_ABBR['hundreds'][hundreds - 1]
-            separator = ones_root + tens_root + hundreds_root
+            separatrix = ones_root + tens_root + hundreds_root
         
         if prefix and (hundreds > 0 or tens > 0):
-            separator += 'i'
+            separatrix += 'i'
         
-        return separator
+        return separatrix
     
     if tens == hundreds == 0:
         if ones == 1 and prefix:
-            separator = ''
+            separatrix = ''
         else:
-            separator = TIER1_ROOTS['ones'][ones - 1][-1 if prefix else 0]
+            separatrix = TIER1_ROOTS['ones'][ones - 1][-1 if prefix else 0]
             if prefix and ones == 3:
-                separator = separator.rstrip('t')
+                separatrix = separatrix.rstrip('t')
     elif tens > 0 and hundreds == 0:
         ones_root = '' if ones == 0 else TIER1_ROOTS['ones'][ones - 1][1].rstrip('t')
         tens_root = TIER1_ROOTS['tens'][tens - 1].rstrip('i')
-        separator = ones_root + tens_root
+        separatrix = ones_root + tens_root
     elif hundreds > 0 and tens == 0:
         if ones == 1 or ones == 3:
             ones_root = TIER1_ROOTS['ones'][ones - 1][1]
             hundreds_root = TIER1_ROOTS['hundreds'][hundreds - 1].rstrip('t')
-            separator = hundreds_root + ones_root
+            separatrix = hundreds_root + ones_root
         else:
           ones_root = '' if ones == 0 else TIER1_ROOTS['ones'][ones - 1][-1]
           hundreds_root = TIER1_ROOTS['hundreds'][hundreds - 1]
-          separator = ones_root + hundreds_root
+          separatrix = ones_root + hundreds_root
     elif hundreds > 0 and tens > 0:
         ones_root = '' if ones == 0 else TIER1_ROOTS['ones'][ones - 1][1].rstrip('t')
         tens_root = TIER1_ROOTS['tens'][tens - 1]
         hundreds_root = TIER1_ROOTS['hundreds'][hundreds - 1]
-        separator = ones_root + tens_root + hundreds_root
+        separatrix = ones_root + tens_root + hundreds_root
     
     if prefix and (hundreds > 0 or tens > 0):
-        separator += 'i'
+        separatrix += 'i'
     
-    return separator
+    return separatrix
 
 
-def gen_class2_separator(n, prefix=False, *, abbr=False):
+def gen_tier2_separatrix(n, prefix=False, *, abbr=False):
     if n >= 1000 or n <= 0:
-        raise ValueError('第二类分隔符的索引必须在 1~999 中。')
+        raise ValueError('第二层级分界线的索引必须在 1~999 中。')
     ones = n % 10
     tens = (n // 10) % 10
     hundreds = (n // 100) % 10
     
     if abbr:
         if tens == hundreds == 0:
-            separator = TIER2_ABBR['ones'][ones - 1][0]
+            separatrix = TIER2_ABBR['ones'][ones - 1][0]
         else:
             ones_root = '' if ones == 0 else TIER2_ABBR['ones'][ones - 1][-1]
             tens_root = '' if tens == 0 else TIER2_ABBR['tens'][tens - 1]
             hundreds_root = '' if hundreds == 0 else TIER2_ABBR['hundreds'][hundreds - 1]
-            separator = ones_root + tens_root + hundreds_root
+            separatrix = ones_root + tens_root + hundreds_root
         
         if prefix:
-            separator += 'e'
+            separatrix += 'e'
         
-        return separator
+        return separatrix
     
     if tens == hundreds == 0:
-        separator = TIER2_ROOTS['ones'][ones - 1][0]
+        separatrix = TIER2_ROOTS['ones'][ones - 1][0]
     elif hundreds == 0 and tens == 1:
         if ones == 0:
-            separator = TIER2_ROOTS['tens'][tens - 1][0] + 'o'
+            separatrix = TIER2_ROOTS['tens'][tens - 1][0] + 'o'
         else:
             ones_root = TIER2_ROOTS['ones'][ones - 1][1]
             tens_root = TIER2_ROOTS['tens'][tens - 1][1] + 'o'
-            separator = ones_root + tens_root
+            separatrix = ones_root + tens_root
     elif hundreds == 0 and tens > 1:
         ones_root = '' if ones == 0 else TIER2_ROOTS['ones'][ones - 1][-1]
         tens_root = TIER2_ROOTS['tens'][tens - 1] + 'o'
-        separator = ones_root + tens_root
+        separatrix = ones_root + tens_root
     elif hundreds > 0 and tens == 0:
         ones_root = '' if ones == 0 else TIER2_ROOTS['ones'][ones - 1][-1]
-        hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1] + 'o'
-        separator = ones_root + hundreds_root
+        hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1]
+        separatrix = ones_root + hundreds_root
     elif hundreds > 0 and tens == 1:
         if ones == 0:
             tens_root = TIER2_ROOTS['tens'][tens - 1][0] + 'e'
-            hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1] + 'o'
-            separator = tens_root + hundreds_root
+            hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1]
+            separatrix = tens_root + hundreds_root
         else:
             ones_root = '' if ones == 0 else TIER2_ROOTS['ones'][ones - 1][1]
             tens_root = TIER2_ROOTS['tens'][tens - 1][1] + 'e'
-            hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1] + 'o'
-            separator = ones_root + tens_root + hundreds_root
+            hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1]
+            separatrix = ones_root + tens_root + hundreds_root
     elif hundreds > 0 and tens > 1:
         ones_root = '' if ones == 0 else TIER2_ROOTS['ones'][ones - 1][-1]
         tens_root = TIER2_ROOTS['tens'][tens - 1] + 'e'
-        hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1] + 'o'
-        separator = ones_root + tens_root + hundreds_root
+        hundreds_root = TIER2_ROOTS['hundreds'][hundreds - 1]
+        separatrix = ones_root + tens_root + hundreds_root
     
     if prefix:
-        separator = separator.rstrip('aeiou') + 'e'
+        separatrix = separatrix.rstrip('aeiou') + 'e'
     
-    return separator
+    return separatrix
 
 
-def gen_class3_separator(n, *, abbr=False):
+def gen_tier3_separatrix(n, *, abbr=False):
     if n >= 1000 or n <= 0:
-        raise ValueError('第三类分隔符的索引必须在 1~999 中。')
+        raise ValueError('第三层级分界线的索引必须在 1~999 中。')
     ones = n % 10
     tens = (n // 10) % 10
     hundreds = (n // 100) % 10
@@ -184,9 +184,9 @@ def gen_class3_separator(n, *, abbr=False):
                     res[2] = TIER3_ABBR['ones'][ones - 1][0 if ones == 4 or ones == 5 else 1 if ones == 3 else 2]
                 res[0] = TIER3_ABBR['hundreds'][hundreds - 1][1]
         
-        separator = ''.join(res)
+        separatrix = ''.join(res)
         
-        return separator
+        return separatrix
     
     ones_roots = TIER3_ROOTS['ones'][ones - 1]
     tens_roots = TIER3_ROOTS['tens'][tens - 1]
@@ -224,23 +224,23 @@ def gen_class3_separator(n, *, abbr=False):
             next_root = res[1] if res[1] else res[2]
             res[0] = hundreds_roots[1 if next_root[0] in {'a', 'e', 'i', 'o', 'u'} else 2]
         
-    separator = ''.join(res)
+    separatrix = ''.join(res)
     
-    return separator
+    return separatrix
 
 
 def gen_tier1_illion(n, *, check_argu=True, abbr=False):
     if check_argu and not 0 < n <= 999:
         raise ValueError('第一层级前缀索引必须是 0~999 中的整数。')
     if abbr:
-        return gen_class1_separator(n, abbr=True), f'1e{3 * n + 3}'
-    return gen_class1_separator(n) + 'illion', f'1e{3 * n + 3}'
+        return gen_tier1_separatrix(n, abbr=True), f'1e{3 * n + 3}'
+    return gen_tier1_separatrix(n) + 'illion', f'1e{3 * n + 3}'
 
 
 def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
     if check_argu:
         if not isinstance(groups, dict):
-            raise ValueError(f'第二类组必须是一个字典。')
+            raise ValueError(f'第二类组映射表必须是一个字典。')
         for k, v in groups.items():
             if not (isinstance(k, int) and 0 <= k <= 999):
                 raise ValueError(f'第二类组索引 "{k}" 非法，第二类组索引必须是 0~999 中的整数。')
@@ -256,8 +256,8 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
     prefixes = []
     values = []
     for tier2_prefix_i, tier1_prefix_i in groups.items():
-        tier2_prefix = gen_class2_separator(tier2_prefix_i, abbr=abbr)
-        tier1_prefix = gen_class1_separator(tier1_prefix_i, True, abbr=abbr)
+        tier2_prefix = gen_tier2_separatrix(tier2_prefix_i, abbr=abbr)
+        tier1_prefix = gen_tier1_separatrix(tier1_prefix_i, True, abbr=abbr)
         
         prefixes.append(tier1_prefix + tier2_prefix)
         values.append(f'{tier1_prefix_i * 3}e{tier2_prefix_i * 3}')
@@ -267,7 +267,7 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
         if group0 in {1, 2, 3}:
             prefixes.append((TIER2_SPECIAL_ONES_ABBR if abbr else TIER2_SPECIAL_ONES_ROOTS)[group0 - 1])
         else:
-            prefixes.append(gen_class1_separator(group0, abbr=abbr))
+            prefixes.append(gen_tier1_separatrix(group0, abbr=abbr))
     else:
         values.append('3')
         if not abbr:
@@ -311,7 +311,7 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
     
     if check_argu:
         if not isinstance(class3_groups, dict):
-            raise ValueError(f'第三类组索引必须是一个字典。')
+            raise ValueError(f'第三类组映射表必须是一个字典。')
         for other_prefixes, tier1_prefix_i in class3_groups.items():
             if len(other_prefixes) == 2:
                 tier3_prefix_i, tier2_prefix_i = other_prefixes
@@ -327,7 +327,7 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
             if not (isinstance(tier1_prefix_i, int) and 0 < tier1_prefix_i <= 999):
                 raise ValueError(f'第三类组索引 "{other_prefixes}" 的第一层级前缀索引非法，第一层级前缀索引必须是在 1~999 中的整数。')
             if tier3_embed_tier2_prefix_groups is not None and not isinstance(tier3_embed_tier2_prefix_groups, tuple):
-                raise ValueError(f'第三类组索引 "{other_prefixes}" 非法，第二三层级嵌套前缀组必须是一个元组。')
+                raise ValueError(f'第三类组索引 "{other_prefixes}" 非法，第二三层级嵌套前缀组映射表必须是一个元组。')
             
             if tier3_embed_tier2_prefix_groups is not None:
                 for prefixes_i in tier3_embed_tier2_prefix_groups:
@@ -349,9 +349,9 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
         else:
             tier3_prefix_i, tier2_prefix_i, tier3_embed_tier2_prefix_groups = other_prefixes
         
-        tier1_prefix = gen_class1_separator(tier1_prefix_i, True, abbr=abbr)
-        tier2_prefix = '' if tier2_prefix_i == 1 else gen_class2_separator(tier2_prefix_i, True, abbr=abbr)
-        tier3_prefix = gen_class3_separator(tier3_prefix_i, abbr=abbr)
+        tier1_prefix = gen_tier1_separatrix(tier1_prefix_i, True, abbr=abbr)
+        tier2_prefix = '' if tier2_prefix_i == 1 else gen_tier2_separatrix(tier2_prefix_i, True, abbr=abbr)
+        tier3_prefix = gen_tier3_separatrix(tier3_prefix_i, abbr=abbr)
 
         tier3_prefix_values = []
         tier3_prefix_values.append(f'{tier2_prefix_i * 3}e{tier3_prefix_i * 3}')
@@ -360,8 +360,8 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
             tier3_embed_tier2_prefixes = ''
             tier3_embed_tier2_prefixes_end_in_tier2_prefix = False
             for inner_tier3_prefix_i, inner_tier2_prefix_i in tier3_embed_tier2_prefix_groups:
-                inner_tier2_prefix = gen_class2_separator(inner_tier2_prefix_i, abbr=abbr) if inner_tier3_prefix_i == 0 else '' if inner_tier2_prefix_i == 1 else gen_class2_separator(inner_tier2_prefix_i, True, abbr=abbr)
-                inner_tier3_prefix = '' if inner_tier3_prefix_i == 0 else gen_class3_separator(inner_tier3_prefix_i, abbr=abbr)
+                inner_tier2_prefix = gen_tier2_separatrix(inner_tier2_prefix_i, abbr=abbr) if inner_tier3_prefix_i == 0 else '' if inner_tier2_prefix_i == 1 else gen_tier2_separatrix(inner_tier2_prefix_i, True, abbr=abbr)
+                inner_tier3_prefix = '' if inner_tier3_prefix_i == 0 else gen_tier3_separatrix(inner_tier3_prefix_i, abbr=abbr)
                 
                 tier3_embed_tier2_prefix = inner_tier2_prefix + inner_tier3_prefix
                 if inner_tier3_prefix_i == 0:
@@ -392,7 +392,4 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
     
     return illion, f"1e({' + '.join(values)})"
 
-print(gen_tier2_illion({12: 45, 0: 75, 978: 44, 1: 42}))
-print(gen_tier2_illion({12: 45, 0: 75, 978: 44, 1: 42}, abbr=True))
-print(gen_tier1_illion(427))
-print(gen_tier1_illion(427, abbr=True))
+print(gen_tier2_separatrix(111))
