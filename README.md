@@ -196,8 +196,8 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
   定义第二类组索引与第一层级前缀的映射关系。  
 
   格式：
-  - 键：第二类组索引（0~999 的整数）
-  - 值：第一层级前缀索引（1~999 的整数）
+  - 键：第二层级分界线索引（0~999 的整数）
+  - 值：第一层级分界线索引（1~999 的整数）
 
 ##### 2. `check_argu` (可选，关键字参数)
 - **类型**：`bool`
@@ -221,14 +221,15 @@ tuple[str, str]  # (-illion 数, 科学计数法)
 #### 异常处理
 当 `check_argu=True` 时，可能会抛出 `ValueError`，触发条件：
 1. 第二类组映射表非字典类型
-2. 第二类组索引超出 0-999 范围
-3. 第一层级前缀索引超出 1-999 范围
+2. 第二层级分界线索引超出 0-999 范围
+3. 第一层级分界线索引超出 1-999 范围
+4. 单个第二类组映射表的最大的第二层级分界线索引为 0
 
 #### 使用示例
 
 ##### 完整输出模式
 ```python
-print(gen_tier2_illion({12:45, 0:75, 978:44, 1:42}))
+print(gen_tier2_illion({12: 45, 0: 75, 978: 44, 1: 42}))
 ```
 输出：
 ```python
@@ -238,7 +239,7 @@ print(gen_tier2_illion({12:45, 0:75, 978:44, 1:42}))
 
 ##### 缩写输出模式
 ```python
-print(gen_tier2_illion({12:45, 0:75, 978:44, 1:42}, abbr=True))
+print(gen_tier2_illion({12: 45, 0: 75, 978: 44, 1: 42}, abbr=True))
 ```
 输出：
 ```python
@@ -280,18 +281,13 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
   定义第三类组的嵌套结构映射关系。
   
   格式：
-  - 键：第三类组索引，形如 `(第三层级前缀索引, 第二层级前缀索引, ((嵌套第三层级前缀索引, 嵌套第二层级前缀索引), ...))` 的元组
-    - 元组长度必须为2或3：
-      - 长度为 2 时：仅包含第三层级前缀索引、第二层级前缀索引
-      - 长度为 3 时：需附加嵌套的第二三层级前缀组
+  - 键：第二&三层级分界线映射表，形如 `((第三层级分界线索引, 第二层级分界线索引), ...)` 的元组（实际上是用字典表示元组）
     - 索引约束：
-      - 第三层级前缀索引：1~999 的整数
-      - 第二层级前缀索引：1~999 的整数
-      - 嵌套第三层级前缀索引：0~999 且小于第三层级前缀索引的整数
-      - 嵌套第二层级前缀索引：1~999 的整数
-  - 值：第一层级前缀索引（1~999 的整数）
+      - 第三层级分界线索引：0~999 的整数，且一个第二&三层级分界线映射表中最大的第三层级分界线索引不能为 0，同时单个个第二&三层级分界线映射表中不能出现重复的第三层级分界线索引
+      - 第二层级分界线索引：1~999 的整数
+  - 值：第一层级分界线索引（1~999 的整数）
 
-##### 2. `tier2_groups` (可选)
+##### 2. `class2_groups` (可选)
 - **类型**：`dict` 或 `None`
 - **默认值**：`None`
 - **描述**：
@@ -314,18 +310,16 @@ def gen_tier3_illion(class3_groups, tier2_groups=None, *, check_argu=True, abbr=
 tuple[str, str]  # (-illion 数, 科学计数法)
 ```
 - **-illion 数**：根据 `abbr` 生成的完整 -illion 数（如 `dokaocta...septingentillion`）或缩写（如 `DoKaOtc...Spe`）
-- **科学计数法**：多层指数嵌套表达式（如 `1e(3e(3e36 + ...) + ...)`）
+- **科学计数法**：-illion 数对应的值
 
 #### 异常处理
 当 `check_argu=True` 时，可能抛出 `ValueError`，触发条件：
 1. 第三类组映射表非字典类型
-2. 第三类组索引长度不在 2~3 范围内
-3. 第三层级前缀索引超出 1-999 范围
-4. 第二层级前缀索引超出 1-999 范围
-5. 第二三层级嵌套前缀组映射表非元组类型
-6. 第二三层级嵌套前缀组长度不为 2
-7. 嵌套第三层级前缀索引大于第三层级前缀索引或小于 0
-8. 嵌套第二层级前缀索引超出 1-999 范围
+2. 第二&三层级分界线映射表的第一层级分界线索引超出 1~999 范围
+3. 单个第二&三层级分界线映射表的最大第三层级分界线索引为 0
+4. 第二&三层级分界线索引的第二层级分界线索引超出 1-999 范围
+5. 第二&三层级分界线索引的第三层级分界线索引超出 0-999 范围
+6. 单个第二&三层级分界线索引存在重复的第三层级分界线索引
 
 如果 `tier2_groups` 不为 `None`，则还可能抛出 `gen_tier2_illion` 函数可能抛出的异常。
 
@@ -334,31 +328,41 @@ tuple[str, str]  # (-illion 数, 科学计数法)
 ##### 完整输出模式
 ```python
 print(gen_tier3_illion({
-    (12, 1, ((11, 980), )): 1,
-    (10, 4, ((1, 724), (9, 11), (0, 679))): 54,
-    (3, 7, ((0, 586), (1, 671), (2, 584))): 412,
-    (1, 175, ((0, 458), )): 151,
-}, {67: 81, 10: 278, 975: 427, 4: 128, 0: 757}))
+    ((2, 13), (0, 1), (1, 14)): 5,
+    ((6, 13), (0, 1), (1, 14)): 5,
+    ((6, 13), (0, 1), (1, 15)): 5,
+    ((6, 13), (0, 2), (1, 15)): 5,
+    ((6, 13), (4, 15), (3, 110)): 120,
+    ((17, 13), (8, 15), (7, 110)): 120,
+    ((672, 13), (27, 15), (45, 110)): 120,
+    ((0, 1), (4, 1)): 120,
+    ((3, 1), ): 120
+}, {15: 1, 4: 1}))
 ```
 输出：
 ```python
-('dokaoctaconteennahectehendako-...-octoseptuagintiducentiveco-...-septenquinquagintiseptingentillion', 
- '1e(3e(3e36 + 2940e33) + ... + 2274)')
+('viginticentitreceexozacodavecehectetecpetapenteceiczeto-viginticentitrecezedakapenteceyottavecehectezetto-viginticentitreceexapenteceteravecehectegigo-quintreceexapentecekillamicro-quintreceexapentecekillamilli-quintreceexatetrecekillamilli-viginticentiteramilli-viginticentigigo-quintrecemegatetrecekillamilli-penteco-picillion', 
+ '1e(3e(39e2016 + 330e135 + 45e81) + 3e(39e51 + 45e24 + 330e21) + 3e(39e18 + 45e12 + 330e9) + 3e(39e18 + 45e3 + 6) + 3e(39e18 + 45e3 + 3) + 3e(39e18 + 42e3 + 3) + 3e(3e12 + 3) + 3e(3e9) + 3e(39e6 + 42e3 + 3) + 3e45 + 3e12 + 3)')
 ```
 
 ##### 缩写输出模式
 ```python
 print(gen_tier3_illion({
-    (12, 1, ((11, 980), )): 1,
-    (10, 4, ((1, 724), (9, 11), (0, 679))): 54,
-    (3, 7, ((0, 586), (1, 671), (2, 584))): 412,
-    (1, 175, ((0, 458), )): 151,
-}, {67: 81, 10: 278, 975: 427, 4: 128, 0: 757}, abbr=True))
+    ((2, 13), (0, 1), (1, 14)): 5,
+    ((6, 13), (0, 1), (1, 14)): 5,
+    ((6, 13), (0, 1), (1, 15)): 5,
+    ((6, 13), (0, 2), (1, 15)): 5,
+    ((6, 13), (4, 15), (3, 110)): 120,
+    ((17, 13), (8, 15), (7, 110)): 120,
+    ((672, 13), (27, 15), (45, 110)): 120,
+    ((0, 1), (4, 1)): 120,
+    ((3, 1), ): 120
+}, {15: 1, 4: 1}, abbr=True))
 ```
 输出：
 ```python
-('DoKaOtcEnhteHDko-...OSpgDceiVc-...-SpQigSpe', 
- '1e(3e(3e36 + 2940e33) + ... + 2274)')
+('VCeiTrVceExoZcDaVcHteTecPtaPtVceIcZo-VCeiTrVceZDkaPtVceYtaVcHteZto-VCeiTrVceExaPtVceTeaVcHteGo-QiTrVceExaPtVceKlaMc-QiTrVceExaPtVceKlaMi-QiTrVceExaTtVceKlaMi-VCeiTeaMi-VCeiGo-QiTrVceMgaTtVceKlaMi-PtVc-Pc', 
+ '1e(3e(39e2016 + 330e135 + 45e81) + 3e(39e51 + 45e24 + 330e21) + 3e(39e18 + 45e12 + 330e9) + 3e(39e18 + 45e3 + 6) + 3e(39e18 + 45e3 + 3) + 3e(39e18 + 42e3 + 3) + 3e(3e12 + 3) + 3e(3e9) + 3e(39e6 + 42e3 + 3) + 3e45 + 3e12 + 3)')
 ```
 
 #### 科学计数法规则
