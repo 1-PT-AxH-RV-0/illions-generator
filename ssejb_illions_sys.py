@@ -232,9 +232,7 @@ def gen_tier3_separatrix(n, *, abbr=False):
 def gen_tier1_illion(n, *, check_argu=True, abbr=False):
     if check_argu and not 0 < n <= 999:
         raise ValueError('第一层级前缀索引必须在 0~999 以内。')
-    if abbr:
-        return gen_tier1_separatrix(n, abbr=True), f'1e{3 * n + 3}'
-    return gen_tier1_separatrix(n) + 'illion', f'1e{3 * n + 3}'
+    return gen_tier1_separatrix(n, abbr=abbr) + 'illion', f'1e{3 * n + 3}', str(n)
 
 
 def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
@@ -252,22 +250,25 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
             raise ValueError(f'第二类组映射表非法，其中最大的第二层级分界线索引不能为 0.')
             
     group0 = groups.get(0)
-    groups = {k: groups[k] for k in sorted(groups, reverse=True) if k}
+    groups = {k: groups[k] for k in sorted(groups, reverse=True) if k and groups[k]}
 
     if len(groups) == 0 and group0 is None:
         return ''
 
     class2_separactor = []
     values = []
+    ths = []
     for tier2_separatrix_i, tier1_separatrix_i in groups.items():
         tier2_separatrix = gen_tier2_separatrix(tier2_separatrix_i, abbr=abbr)
         tier1_separatrix = gen_tier1_separatrix(tier1_separatrix_i, True, abbr=abbr)
         
         class2_separactor.append(tier1_separatrix + tier2_separatrix)
         values.append(f'{tier1_separatrix_i * 3}e{tier2_separatrix_i * 3}')
+        ths.append(f'{tier1_separatrix_i}e{tier2_separatrix_i * 3}')
     
     if group0 is not None:
         values.append(str(3 * group0 + 3))
+        ths.append(str(group0))
         if group0 in {1, 2, 3}:
             class2_separactor.append((GROUP0_SPECIAL_ONES_ABBR if abbr else GROUP0_SPECIAL_ONES_ROOTS)[group0 - 1])
         else:
@@ -279,7 +280,7 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
     
     illion = '-'.join(class2_separactor) + ('' if abbr else 'illion')
     
-    return illion, f"1e({' + '.join(values)})"
+    return illion, f"1e({' + '.join(values)})", ' + '.join(ths)
 
 
 def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
@@ -319,7 +320,7 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
             else:
                 raise ValueError(f'第二类组映射表的键 "{class3_groups_or_tier2_separatrix_i}" 非法，必须是元组或整数类型。')
 
-    class2_groups = sort_groups(class2_groups)
+    class2_groups = dict(filter(lambda i: i[1] != 0, sort_groups(class2_groups).items()))
     class2_groups_with_tier3 = {}
     class2_groups_without_tier3 = {}
      
@@ -331,12 +332,14 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
 
     class2_separators_with_tier3 = []
     values = []
+    ths = []
 
     for class3_groups, tier1_separatrix_i in class2_groups_with_tier3.items():
         tier1_separatrix = gen_tier1_separatrix(tier1_separatrix_i, True, abbr=abbr)
         
         class2_separator_with_tier3 = ''
         class2_separator_with_tier3_values = []
+        class2_separator_with_tier3_ths = []
         end_in_tier2_separatrix = False
         for tier3_separatrix_i, tier2_separatrix_i in class3_groups:
             if tier3_separatrix_i == 0:
@@ -345,21 +348,25 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
                 
                 class2_separator_with_tier3 += tier2_separatrix
                 class2_separator_with_tier3_values.append(str(tier2_separatrix_i * 3))
+                class2_separator_with_tier3_ths.append(str(tier2_separatrix_i * 3))
             else:
                 tier2_separatrix = '' if tier2_separatrix_i == 1 else gen_tier2_separatrix(tier2_separatrix_i, True, abbr=abbr)
                 tier3_separatrix = gen_tier3_separatrix(tier3_separatrix_i, abbr=abbr)
                 
                 class2_separator_with_tier3 += tier2_separatrix + tier3_separatrix
                 class2_separator_with_tier3_values.append(f'{tier2_separatrix_i * 3}e{tier3_separatrix_i * 3}')
+                class2_separator_with_tier3_ths.append(f'{tier2_separatrix_i *3}e{tier3_separatrix_i * 3}')
         if not end_in_tier2_separatrix:
             class2_separator_with_tier3 = class2_separator_with_tier3.rstrip('aeiou') + 'o'
         
         class2_separators_with_tier3.append(tier1_separatrix + class2_separator_with_tier3)
         values.append(f"{3 * tier1_separatrix_i}e({' + '.join(class2_separator_with_tier3_values)})")
+        ths.append(f"{tier1_separatrix_i}e({' + '.join(class2_separator_with_tier3_ths)})")
     
     illion_class2_separators_with_tier3 = '-'.join(class2_separators_with_tier3)
     if len(class2_groups_without_tier3) == 0:
         illion = illion_class2_separators_with_tier3 if abbr else illion_class2_separators_with_tier3.rstrip('aeiou') + 'illion'
+        values.append('3')
     elif max(class2_groups_without_tier3) == 0:
         group0 = class2_groups_without_tier3[0]
         if group0 in {1, 2, 3}:
@@ -370,14 +377,12 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
         if not abbr:
             illion += 'illion'
         values.append(str(3 * group0 + 3))
+        ths.append(str(group0))
     else:
-        illion_class2_separators_without_tier3, class2_separators_without_tier3_values = gen_tier2_illion(class2_groups_without_tier3, abbr=abbr)
+        illion_class2_separators_without_tier3, class2_separators_without_tier3_values, class2_separators_without_tier3_th = gen_tier2_illion(class2_groups_without_tier3, abbr=abbr)
         class2_separators_without_tier3_values = class2_separators_without_tier3_values[3:-1]
         values.append(class2_separators_without_tier3_values)
+        ths.append(class2_separators_without_tier3_th)
         illion = illion_class2_separators_with_tier3 + '-' + illion_class2_separators_without_tier3
     
-    return illion, f"1e({' + '.join(values)})"
-
-
-print(gen_tier1_illion(571))
-print(gen_tier3_illion({((106, 1), ): 1, ((5, 10), (4, 157)): 57, 0: 571, 5: 157, 45: 145, 999: 999}))
+    return illion, f"1e({' + '.join(values)})", ' + '.join(ths)

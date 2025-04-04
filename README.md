@@ -118,7 +118,7 @@ def gen_tier1_illion(n, *, check_argu=True, abbr=False):
 ```
 
 #### 概述
-此函数用于生成第一层级的 -illion 数，同时返回用科学计数法表示的值。
+此函数用于生成第一层级的 -illion 数，同时返回用科学计数法表示的值及其序号。
 
 #### 参数说明
 
@@ -141,10 +141,11 @@ def gen_tier1_illion(n, *, check_argu=True, abbr=False):
 
 #### 返回值
 ```python
-tuple[str, str]  # (-illion 数, 科学计数法)
+tuple[str, str, str]  # (-illion 数, 科学计数法, 序号)
 ```
 - **-illion 数**：根据 `abbr` 生成的完整 -illion 数（如 `septenvigintiquadringentillion`）或缩写（如 `SpVQae`）
 - **科学计数法**：-illion 数对应的值
+- **序号**：-illion 数的序号
 
 #### 异常处理
 当 `check_argu=True` 时，可能会抛出 `ValueError`，触发条件：第一层级分界线索引超出 1~999 范围
@@ -186,7 +187,7 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
 ```
 
 #### 概述
-此函数用于生成第二层级的 -illion 数，同时返回用科学计数法表示的值。
+此函数用于生成第二层级的 -illion 数，同时返回用科学计数法表示的值及其序号。
 
 #### 参数说明
 
@@ -213,10 +214,11 @@ def gen_tier2_illion(groups, *, check_argu=True, abbr=False):
 
 #### 返回值
 ```python
-tuple[str, str]  # (-illion 数, 科学计数法)
+tuple[str, str, str]  # (-illion 数, 科学计数法, 序号)
 ```
 - **-illion 数**：根据 `abbr` 生成的完整 -illion 数（如 `quattuorquadraginti...illion`）或缩写（如 `QaQagi...Spg`）
 - **科学计数法**：-illion 数对应的值
+- **序号**：-illion 数的序号
 
 #### 异常处理
 当 `check_argu=True` 时，可能会抛出 `ValueError`，触发条件：
@@ -271,7 +273,7 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
 ```
 
 #### 概述
-此函数用于生成第三层级的 -illion 数，同时返回用科学计数法表示的值。
+此函数用于生成第三层级的 -illion 数，同时返回用科学计数法表示的值及其序号。
 
 #### 参数说明
 
@@ -307,10 +309,11 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
 
 #### 返回值
 ```python
-tuple[str, str]  # (-illion 数, 科学计数法)
+tuple[str, str, str]  # (-illion 数, 科学计数法, 序号)
 ```
 - **-illion 数**：根据 `abbr` 生成的完整 -illion 数（如 `dokaocta...septingentillion`）或缩写（如 `DoKaOtc...Spe`）
 - **科学计数法**：-illion 数对应的值
+- **序号**：-illion 数的序号
 
 #### 异常处理
 当 `check_argu=True` 时，可能抛出 `ValueError`，触发条件：
