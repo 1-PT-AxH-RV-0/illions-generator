@@ -355,7 +355,7 @@ def gen_tier3_illion(class2_groups, *, check_argu=True, abbr=False):
             class2_separator_with_tier3 = class2_separator_with_tier3.rstrip('aeiou') + 'o'
         
         class2_separators_with_tier3.append(tier1_separatrix + class2_separator_with_tier3)
-        values.append(f"3e({' + '.join(class2_separator_with_tier3_values)})")
+        values.append(f"{3 * tier1_separatrix_i}e({' + '.join(class2_separator_with_tier3_values)})")
     
     illion_class2_separators_with_tier3 = '-'.join(class2_separators_with_tier3)
     if len(class2_groups_without_tier3) == 0:
